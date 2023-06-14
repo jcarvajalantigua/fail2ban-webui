@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /var/www
+
 # Clone the repository
 git clone https://github.com/beetwenty/fail2ban-webui.git
 
