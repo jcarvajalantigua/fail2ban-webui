@@ -12,7 +12,7 @@ sudo git clone https://github.com/beetwenty/fail2ban-webui.git
 cd fail2ban-webui
 
 #install the required dependencies
-sudo pip install -r requrements.txt
+sudo pip install -r requirements.txt
 
 #install gunicorn
 sudo apt-get install -y gunicorn 
