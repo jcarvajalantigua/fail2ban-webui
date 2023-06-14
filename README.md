@@ -28,7 +28,7 @@ pip install -r requirements.txt
 apt-get install gunicorn
 ```
 5. create gunicorn config file
-````bash
+```bash
 vi gunicorn.conf.py
 ```
 example
@@ -39,7 +39,7 @@ accesslog = '/var/log/gunicorn/access.log'
 errorlog = '/var/log/gunicorn/error.log'
 ```
 6. create the error log dir.
-````bash
+```bash
 mkdir /var/log/gunicorn
 ```
 7. create a service for the server.
