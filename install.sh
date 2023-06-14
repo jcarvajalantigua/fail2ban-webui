@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo apt-get install -y git
+sudo apt-get install -y python3 pip
 
 cd /var/www
 
