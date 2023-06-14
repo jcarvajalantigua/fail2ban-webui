@@ -12,7 +12,7 @@ cd fail2ban-webui
 pip install -r requrements.txt
 
 #install gunicorn
-apt-get install gunicorn
+apt-get install gunicorn -y
 
 #create gunicorn config file 
 cat << EOF > gunicorn.conf.py
