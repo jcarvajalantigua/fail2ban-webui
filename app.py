@@ -26,16 +26,6 @@ def get_country(ip):
         country = 'Unknown'
     return country
 
-def check_service_status(service_name):
-    # Execute the command to check the service status
-    command = f"systemctl is-active {service_name}"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    
-    # Check the output of the command
-    if result.returncode == 0:
-        return True  # Service is active
-    else:
-        return False  # Service is not active
 
 def read_fail2ban_config():
     """
@@ -136,8 +126,6 @@ def ssh_login_required(f):
 @ssh_login_required
 def index():
     banned_ips = get_banned_ips()
-    service_name = "fail2ban"
-    is_running = check_service_status(service_name)
     # Get top countries based on banned IPs
     top_countries = {}
     for ip in banned_ips:
@@ -147,7 +135,7 @@ def index():
     # Sort the countries based on the count
     sorted_countries = sorted(top_countries.items(), key=lambda x: x[1], reverse=True)
 
-    return render_template('index.html', banned_ips=banned_ips, top_countries=sorted_countries, is_running=is_running)
+    return render_template('index.html', banned_ips=banned_ips, top_countries=sorted_countries)
 
 
 
