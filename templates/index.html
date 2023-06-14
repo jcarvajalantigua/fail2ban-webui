@@ -1,0 +1,52 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Fail2ban UI{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Total Banned IP Addresses: {{ banned_ips|length }}</h2>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>IP Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ip in banned_ips %}
+            <tr>
+              <td>{{ ip }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="table-container">
+        <h2>Top 10 Countries</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for country, count in top_countries[:10] %}
+            <tr>
+              <td>{{ country }}</td>
+              <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

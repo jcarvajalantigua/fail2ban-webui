@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Fail2ban UI - Configuration{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="main-content">
+        <h1>Fail2ban Configuration</h1>
+
+        <form action="{{ url_for('index') }}" method="GET" class="form-inline">
+            <button type="submit" class="btn btn-primary">Home</button>
+        </form>
+
+        <form action="{{ url_for('config') }}" method="POST">
+            <div class="form-group">
+                <label for="maxretry">Max Retry: "How many Retry before ip gets banend"</label>
+                <input type="text" id="maxretry" name="maxretry" value="{{ config['maxretry'] }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="bantime">Ban Time: "How long the ip should be banned"</label>
+                <input type="text" id="bantime" name="bantime" value="{{ config['bantime'] }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="findtime">Find Time: "how long time between Retry"</label>
+                <input type="text" id="findtime" name="findtime" value="{{ config['findtime'] }}" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+
+        <form action="/banip" method="POST">
+            <div class="form-group">
+                <label for="ip">IP Address:</label>
+                <input type="text" id="ip" name="ip" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-danger">Ban IP</button>
+        </form>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ip in banned_ips %}
+                    <tr>
+                        <td>{{ ip }}</td>
+                        <td>
+                            <form action="/unbanip" method="POST">
+                                <input type="hidden" name="ip" value="{{ ip }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

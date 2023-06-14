@@ -1,0 +1,227 @@
+import paramiko
+import subprocess
+import geoip2.database
+import secrets
+from functools import wraps
+from flask import Flask, render_template, request, redirect, session, url_for
+from flask_bootstrap import Bootstrap
+
+
+
+
+app = Flask(__name__)
+bootstrap = Bootstrap(app)
+app.secret_key = secrets.token_hex()
+
+
+# Path to the Fail2ban configuration file
+FAIL2BAN_CONFIG_FILE = '/etc/fail2ban/jail.conf'
+
+def get_country(ip):
+    reader = geoip2.database.Reader('GeoLite2-Country/GeoLite2-Country.mmdb')
+    try:
+        response = reader.country(ip)
+        country = response.country.name
+    except geoip2.errors.AddressNotFoundError:
+        country = 'Unknown'
+    return country
+
+def check_service_status(service_name):
+    # Execute the command to check the service status
+    command = f"systemctl is-active {service_name}"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    
+    # Check the output of the command
+    if result.returncode == 0:
+        return True  # Service is active
+    else:
+        return False  # Service is not active
+
+def read_fail2ban_config():
+    """
+    Read the Fail2ban configuration file and extract the relevant settings.
+    Modify this function based on the configuration options you want to expose.
+    """
+    config = {}
+
+    with open(FAIL2BAN_CONFIG_FILE, 'r') as file:
+        lines = file.readlines()
+
+        # Example: Extract the value of maxretry from the configuration file
+        for line in lines:
+            if line.startswith('maxretry'):
+                config['maxretry'] = line.split('=')[1].strip()
+            elif line.startswith('bantime'):
+                config['bantime'] = line.split('=')[1].strip()
+            elif line.startswith('findtime'):
+                config['findtime'] = line.split('=')[1].strip()
+
+    return config
+
+def write_fail2ban_config(config):
+    """
+    Write the modified Fail2ban configuration back to the file.
+    Modify this function based on the configuration options you want to update.
+    """
+    with open(FAIL2BAN_CONFIG_FILE, 'r') as file:
+        lines = file.readlines()
+
+    with open(FAIL2BAN_CONFIG_FILE, 'w') as file:
+        for line in lines:
+            # Example: Update the maxretry value in the configuration file
+            if line.startswith('maxretry'):
+                file.write(f'maxretry = {config["maxretry"]}\n')
+            elif line.startswith('bantime'):
+                file.write(f'bantime = {config["bantime"]}\n')
+            elif line.startswith('findtime'):
+                file.write(f'findtime = {config["findtime"]}\n')
+            else:
+                file.write(line)
+
+def reload_fail2ban():
+    """
+    Execute the Fail2ban reload command.
+    """
+    subprocess.run(['fail2ban-client', 'reload'], capture_output=True, text=True)
+
+
+def get_banned_ips():
+    command = ['fail2ban-client', 'status', 'sshd']
+    result = subprocess.run(command, capture_output=True, text=True)
+    output = result.stdout
+    
+    banned_ips = output.split('Banned IP list:')[1].strip().split()
+
+    return banned_ips
+
+def add_banned_ip(ip):
+    command = ['fail2ban-client', 'set', 'sshd', 'banip', ip]
+    subprocess.run(command, capture_output=True, text=True)
+
+def delete_banned_ip(ip):
+    command = ['fail2ban-client', 'set', 'sshd', 'unbanip', ip]
+    subprocess.run(command, capture_output=True, text=True)
+
+
+
+
+
+def authenticate_ssh(username, password):
+    try:
+        # Create an SSH client
+        client = paramiko.SSHClient()
+
+        # Automatically add the host key
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Connect to the server using SSH
+        client.connect('localhost', username=username, password=password)
+        
+        # Close the SSH connection
+        client.close()
+
+        return True
+    except paramiko.AuthenticationException:
+        return False
+
+def ssh_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session or not authenticate_ssh(session['username'], session['password']):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/')
+@ssh_login_required
+def index():
+    banned_ips = get_banned_ips()
+    service_name = "fail2ban"
+    is_running = check_service_status(service_name)
+    # Get top countries based on banned IPs
+    top_countries = {}
+    for ip in banned_ips:
+        country = get_country(ip)
+        top_countries[country] = top_countries.get(country, 0) + 1
+
+    # Sort the countries based on the count
+    sorted_countries = sorted(top_countries.items(), key=lambda x: x[1], reverse=True)
+
+    return render_template('index.html', banned_ips=banned_ips, top_countries=sorted_countries, is_running=is_running)
+
+
+
+
+@app.route('/config', methods=['GET', 'POST'])
+@ssh_login_required
+def config():
+    if 'username' in session:
+        if request.method == 'POST':
+            # Retrieve form data and update the configuration
+            maxretry = request.form.get('maxretry')
+            bantime = request.form.get('bantime')
+            findtime = request.form.get('findtime')
+
+            config = read_fail2ban_config()
+            config['maxretry'] = maxretry
+            config['bantime'] = bantime
+            config['findtime'] = findtime
+            write_fail2ban_config(config)
+
+            # Reload Fail2ban
+            reload_fail2ban()
+
+            # Redirect to the configuration page after saving
+            return redirect(url_for('config'))
+        else:
+            # Read the current Fail2ban configuration
+            config = read_fail2ban_config()
+            banned_ips = get_banned_ips()
+            return render_template('config.html', config=config, banned_ips=banned_ips) 
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/banip', methods=['POST'])
+@ssh_login_required
+def ban_ip():
+    if 'username' in session:
+        ip = request.form.get('ip')
+        add_banned_ip(ip)
+        return redirect(url_for('config'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/unbanip', methods=['POST'])
+@ssh_login_required
+def unban_ip():
+    if 'username' in session:
+        ip = request.form.get('ip')
+        delete_banned_ip(ip)
+        return redirect(url_for('config'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if authenticate_ssh(username, password):
+            session['username'] = username
+            session['password'] = password
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html', message='Invalid credentials')
+    else:
+        return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')

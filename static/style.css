@@ -1,0 +1,348 @@
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply basic styling to the body */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1f1f1;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  color: #333333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.ip-list-header {
+  margin-top: 30px;
+  color: #333333;
+  font-weight: bold;
+}
+
+.ip-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding: 0;
+}
+
+.ip-list li {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.table-container {
+  margin-top: 30px;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container th {
+  background-color: #8f131d;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.table-container td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+a.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+a.button:hover {
+  opacity: 0.8;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1f1f1;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+
+h1 {
+  color: #333333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+
+
+.ip-list {
+  margin-top: 30px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.ip-list li {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+}
+
+table th {
+  background-color: #8f131d;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+form button[type="submit"].delete {
+  padding: 10px 20px;
+  background-color: #FF0000; /* Red color for delete button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button[type="submit"].ban {
+  padding: 10px 20px;
+  background-color: #FF0000; /* Red color for ban IP button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button[type="submit"].save {
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green color for save button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+  opacity: 0.8;
+}
+
+.green-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+button[type="submit"].login {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"].login:hover {
+  opacity: 0.8;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.container:before,
+.container:after {
+  content: "";
+  display: table;
+}
+
+.container:after {
+  clear: both;
+}
+
+.container .form-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.container .form-group input {
+  height: 40px;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 16px;
+  color: #555;
+  padding: 0;
+  background: transparent;
+  z-index: 1;
+}
+
+.container .form-group label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  color: #555;
+  pointer-events: none;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.container .form-group input:focus + label,
+.container .form-group input:valid + label {
+  font-size: 12px;
+  color: #007bff;
+  top: -20px;
+}
+
+.container .form-group .bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.container .form-group .bar:before,
+.container .form-group .bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0;
+  position: absolute;
+  background: #007bff;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.container .form-group .bar:before {
+  left: 50%;
+}
+
+.container .form-group .bar:after {
+  right: 50%;
+}
+
+.container .form-group input:focus ~ .bar:before,
+.container .form-group input:focus ~ .bar:after {
+  width: 50%;
+}
+
+
+.container .form-group .highlight {
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.container .form-group .highlight:before,
+.container .form-group .highlight:after {
+  content: "";
+  height: 3px;
+  width: 100px;
+  position: absolute;
+  background: #007bff;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.container .form-group .highlight:before {
+  top: -5px;
+  left: 0;
+}
+
+.container .form-group .highlight:after {
+  bottom: -5px;
+  right: 0;
+}
+
+.container .form-group input:focus ~ .highlight:before,
+.container .form-group input:focus ~ .highlight:after {
+  width: 50%;
+}
