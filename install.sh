@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo apt-get install -y git
+
 cd /var/www
 
 # Clone the repository
@@ -12,7 +14,7 @@ cd fail2ban-webui
 sudo pip install -r requrements.txt
 
 #install gunicorn
-sudo apt-get install gunicorn -y
+sudo apt-get install -y gunicorn 
 
 #create gunicorn config file 
 sudo cat << EOF > gunicorn.conf.py
