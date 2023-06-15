@@ -3,6 +3,9 @@ import subprocess
 import geoip2.database
 import secrets
 import re
+import pwd
+import spwd
+import hashlib
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -102,22 +105,29 @@ def delete_banned_ip(ip):
     subprocess.run(command, capture_output=True, text=True)
 
 
-def authenticate_ssh(username, password):
+
+def authenticate_system(username, password):
     try:
-        # Create an SSH client
-        client = paramiko.SSHClient()
+        # Retrieve the user's encrypted password from the system password database
+        encrypted_password = spwd.getspnam(username).sp_pwd
 
-        # Set the missing host key policy to RejectPolicy
-        client.set_missing_host_key_policy(paramiko.RejectPolicy())
+        # Encrypt the provided password using the same algorithm and salt as the user's password
+        salt = encrypted_password.split('$')[2]
+        password_hash = hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
 
-        # Connect to the server using SSH
-        client.connect('localhost', username=username, password=password)
-        
-        # Close the SSH connection
-        client.close()
+        # Compare the encrypted password hashes
+        if encrypted_password == password_hash:
+            return True
+        else:
+            return False
+    except KeyError:
+        return False
 
+def authenticate(username, password):
+    # You can add additional authentication methods here
+    if authenticate_system(username, password):
         return True
-    except paramiko.AuthenticationException:
+    else:
         return False
 
 
@@ -197,14 +207,12 @@ def unban_ip():
         return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
-
-@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
 
-        if authenticate_ssh(username, password):
+        if authenticate(username, password):
             session['username'] = username
             session['password'] = password
             return redirect(url_for('index'))
