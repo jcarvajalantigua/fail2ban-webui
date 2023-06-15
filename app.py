@@ -86,7 +86,7 @@ def get_banned_ips():
     
     banned_ips = output.split('Banned IP list:')[1].strip().split()
 
-    return banned_ips
+    return banned_ips 
 
 
 
