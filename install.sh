@@ -1,4 +1,6 @@
 #!/bin/bash
+# delete old files
+sudo rm -r /var/www/fail2ban*
 # install requirements
 sudo apt-get install -y git python3 pip gunicorn
 
