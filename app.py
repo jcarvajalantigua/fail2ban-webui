@@ -5,7 +5,7 @@ import secrets
 import re
 import logging
 import spwd
-import hashlib
+from passlib.hash import sha512_crypt
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -115,7 +115,7 @@ def authenticate_system(username, password):
 
         # Generate the password hash using the provided password and the same salt as the user's password
         salt = encrypted_password.split('$')[2]
-        password_hash = hashlib.sha512_crypt.using(rounds=656000, salt=salt).hash(password)
+        password_hash = sha512_crypt.using(rounds=656000, salt=salt).hash(password)
 
         # Compare the encrypted password and the generated password hash
         if encrypted_password == password_hash:
