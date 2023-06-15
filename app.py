@@ -19,7 +19,7 @@ app.secret_key = secrets.token_hex()
 FAIL2BAN_CONFIG_FILE = '/etc/fail2ban/jail.conf'
 
 def get_country(ip):
-    reader = geoip2.database.Reader('GeoLite2-Country/GeoLite2-Country.mmdb')
+    reader = geoip2.database.Reader('/var/www/fail2ban-webui/GeoLite2-Country/GeoLite2-Country.mmdb')
     try:
         response = reader.country(ip)
         country = response.country.name
