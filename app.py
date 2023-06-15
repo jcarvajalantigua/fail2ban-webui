@@ -2,6 +2,7 @@ import paramiko
 import subprocess
 import geoip2.database
 import secrets
+import re
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -87,10 +88,15 @@ def get_banned_ips():
 def add_banned_ip(ip):
     command = ['fail2ban-client', 'set', 'sshd', 'banip', ip]
     subprocess.run(command, capture_output=True, text=True)
+    
 
 def delete_banned_ip(ip):
+    if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
+        raise ValueError("Invalid IP address format")
+
     command = ['fail2ban-client', 'set', 'sshd', 'unbanip', ip]
     subprocess.run(command, capture_output=True, text=True)
+
 
 
 
