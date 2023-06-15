@@ -1,33 +1,40 @@
 #!/bin/bash
-# delete old files
+
+# Delete old files
 sudo rm -r /var/www/fail2ban*
-# install requirements
-sudo apt-get install -y git python3 pip gunicorn
+
+# Install requirements
+sudo apt-get install -y git python3-pip gunicorn
 
 cd /var/www
 
 # Clone the repository
 sudo git clone https://github.com/beetwenty/fail2ban-webui.git
 
-# change to project directory
+# Change to project directory
 cd fail2ban-webui
 
-#install the required dependencies
+# Create and activate a virtual environment (optional)
+sudo apt-get install -y python3-venv
+sudo python3 -m venv venv
+source venv/bin/activate
+
+# Install the required dependencies
 sudo pip install -r requirements.txt
 
-#create gunicorn config file 
-sudo cat << EOF > gunicorn.conf.py
+# Create Gunicorn config file
+sudo cat <<EOF > gunicorn.conf.py
 workers = 4
 bind = '127.0.0.1:5000'
 accesslog = '/var/log/gunicorn/access.log'
 errorlog = '/var/log/gunicorn/error.log'
 EOF
 
-#create the error log directory
-sudo mkdir /var/log/gunicorn
+# Create the error log directory
+sudo mkdir -p /var/log/gunicorn
 
-#create a service for the server
-sudo cat << EOF > /etc/systemd/system/fail2ban-web.service
+# Create a service for the server
+sudo cat <<EOF > /etc/systemd/system/fail2ban-web.service
 [Unit]
 Description=Fail2ban-web server
 After=network.target
@@ -35,15 +42,14 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/var/www/fail2ban-webui
-ExecStart=gunicorn -c /var/www/fail2ban-webui/gunicorn.conf.py app:app
+ExecStart=/var/www/fail2ban-webui/venv/bin/gunicorn -c /var/www/fail2ban-webui/gunicorn.conf.py app:app
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# start and enable the service
+# Start and enable the service
 sudo systemctl daemon-reload
-sudo systemctl start fail2ban-web.service
 sudo systemctl enable fail2ban-web.service
-sudo systemctl restart fail2ban-web.service
+sudo systemctl start fail2ban-web.service
 sudo systemctl status fail2ban-web.service
