@@ -5,7 +5,7 @@ import secrets
 import re
 import logging
 import spwd
-import passlib.hash
+import hashlib
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -112,22 +112,19 @@ def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
         encrypted_password = spwd.getspnam(username).sp_pwd
-        logger.debug(f"Encrypted Password: {encrypted_password}")
 
-        # Extract the salt from the encrypted password
+        # Generate the password hash using the provided password and the same salt as the user's password
         salt = encrypted_password.split('$')[2]
+        password_hash = hashlib.sha512_crypt.using(rounds=656000, salt=salt).hash(password)
 
-        # Encrypt the provided password using SHA-512 algorithm and the extracted salt
-        password_hash = passlib.hash.sha512_crypt.using(salt=salt).hash(password)
-        logger.debug(f"Generated Password Hash: {password_hash}")
-
-        # Compare the generated password hash with the stored encrypted password
+        # Compare the encrypted password and the generated password hash
         if encrypted_password == password_hash:
             return True
         else:
             return False
     except KeyError:
         return False
+
 
 
 
