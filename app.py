@@ -112,11 +112,11 @@ def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
         encrypted_password = spwd.getspnam(username).sp_pwd
-
+        print(encrypted_password)
         # Generate the password hash using the provided password and the same salt as the user's password
         salt = encrypted_password.split('$')[2]
         password_hash = sha512_crypt.using(rounds=656000, salt=salt).hash(password)
-
+        print(password_hash)
         # Compare the encrypted password and the generated password hash
         if encrypted_password == password_hash:
             return True
