@@ -10,7 +10,7 @@ import hashlib
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
-
+logger = logging.getLogger(__name__)
 
 
 
@@ -109,12 +109,11 @@ def delete_banned_ip(ip):
 
 
 
-import crypt
-
 def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
         encrypted_password = spwd.getspnam(username).sp_pwd
+        logger.debug(f"Encrypted Password: {encrypted_password}")
 
         # Extract the salt from the encrypted password
         if encrypted_password.startswith('$'):
@@ -126,6 +125,7 @@ def authenticate_system(username, password):
 
         # Encrypt the provided password using the same algorithm and salt as the user's password
         password_hash = crypt.crypt(password, f"${encrypted_password[:2]}${salt}")
+        logger.debug(f"Generated Password Hash: {password_hash}")
 
         # Compare the generated password hash with the stored encrypted password
         if encrypted_password == password_hash:
