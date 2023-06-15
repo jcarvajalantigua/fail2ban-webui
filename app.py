@@ -102,17 +102,13 @@ def delete_banned_ip(ip):
     subprocess.run(command, capture_output=True, text=True)
 
 
-
-
-
-
 def authenticate_ssh(username, password):
     try:
         # Create an SSH client
         client = paramiko.SSHClient()
 
-        # Automatically add the host key
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # Set the missing host key policy to RejectPolicy
+        client.set_missing_host_key_policy(paramiko.RejectPolicy())
 
         # Connect to the server using SSH
         client.connect('localhost', username=username, password=password)
@@ -123,6 +119,7 @@ def authenticate_ssh(username, password):
         return True
     except paramiko.AuthenticationException:
         return False
+
 
 def ssh_login_required(f):
     @wraps(f)
