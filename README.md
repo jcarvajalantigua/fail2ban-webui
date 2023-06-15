@@ -70,7 +70,8 @@ systemctl enable fail2ban-web.service
 1. download install script.
    ```bash
    wget https://raw.githubusercontent.com/BeeTwenty/fail2ban-webui/master/install.sh
-  ```
+```
+
 2. run the installer
 ```bash
 sudo bash install.sh
