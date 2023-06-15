@@ -80,12 +80,13 @@ def reload_fail2ban():
 
 
 def get_banned_ips():
-    try:
-        output = subprocess.check_output(['fail2ban-client', 'status'], universal_newlines=True)
-        banned_ips = output.split('Banned IP list:')[1].strip().split()
-        return banned_ips
-    except (IndexError, subprocess.CalledProcessError):
-        return []  # Return an empty list if the banned IP list is not found or if there's an error
+    command = ['fail2ban-client', 'status', 'sshd']
+    result = subprocess.run(command, capture_output=True, text=True)
+    output = result.stdout
+    
+    banned_ips = output.split('Banned IP list:')[1].strip().split()
+
+    return banned_ips
 
 
 
