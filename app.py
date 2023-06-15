@@ -4,7 +4,7 @@ import geoip2.database
 import secrets
 import re
 import logging
-import pwd
+import crypt
 import spwd
 import hashlib
 from functools import wraps
@@ -109,26 +109,32 @@ def delete_banned_ip(ip):
 
 
 
+import crypt
+
 def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
         encrypted_password = spwd.getspnam(username).sp_pwd
 
+        # Extract the salt from the encrypted password
+        if encrypted_password.startswith('$'):
+            # Password hash format: $id$salt$encrypted
+            salt = encrypted_password.split('$')[2]
+        else:
+            # Password hash format: encrypted$salt
+            salt = encrypted_password.rsplit('$', 1)[1]
+
         # Encrypt the provided password using the same algorithm and salt as the user's password
-        salt = encrypted_password.split('$')[2]
-        password_hash = hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
+        password_hash = crypt.crypt(password, f"${encrypted_password[:2]}${salt}")
 
-        # Log the encrypted password and password hash for verification
-        logging.debug(f'Encrypted Password: {encrypted_password}')
-        logging.debug(f'Generated Password Hash: {password_hash}')
-
-        # Compare the encrypted password hashes
+        # Compare the generated password hash with the stored encrypted password
         if encrypted_password == password_hash:
             return True
         else:
             return False
     except KeyError:
         return False
+
 
 
 def authenticate(username, password):
