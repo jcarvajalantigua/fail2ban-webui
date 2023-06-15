@@ -1,7 +1,6 @@
 #!/bin/bash
-
-sudo apt-get install -y git
-sudo apt-get install -y python3 pip
+# install requirements
+sudo apt-get install -y git python3 pip gunicorn
 
 cd /var/www
 
@@ -13,9 +12,6 @@ cd fail2ban-webui
 
 #install the required dependencies
 sudo pip install -r requirements.txt
-
-#install gunicorn
-sudo apt-get install -y gunicorn 
 
 #create gunicorn config file 
 sudo cat << EOF > gunicorn.conf.py
