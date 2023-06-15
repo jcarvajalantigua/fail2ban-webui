@@ -84,13 +84,9 @@ def get_banned_ips():
     result = subprocess.run(command, capture_output=True, text=True)
     output = result.stdout
     
-    banned_ips = []
-
-    if 'Banned IP list:' in output:
-        banned_ips = output.split('Banned IP list:')[1].strip().split()
+    banned_ips = output.split('Banned IP list:')[1].strip().split()
 
     return banned_ips
-
 
 def add_banned_ip(ip):
     if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
