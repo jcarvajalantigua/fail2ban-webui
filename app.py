@@ -3,6 +3,7 @@ import subprocess
 import geoip2.database
 import secrets
 import re
+import logging
 import pwd
 import spwd
 import hashlib
@@ -16,7 +17,7 @@ from flask_bootstrap import Bootstrap
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.secret_key = secrets.token_hex()
-
+logging.basicConfig(level=logging.DEBUG)
 
 # Path to the Fail2ban configuration file
 FAIL2BAN_CONFIG_FILE = '/etc/fail2ban/jail.conf'
@@ -106,6 +107,8 @@ def delete_banned_ip(ip):
 
 
 
+
+
 def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
@@ -115,6 +118,10 @@ def authenticate_system(username, password):
         salt = encrypted_password.split('$')[2]
         password_hash = hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
 
+        # Log the encrypted password and password hash for verification
+        logging.debug(f'Encrypted Password: {encrypted_password}')
+        logging.debug(f'Generated Password Hash: {password_hash}')
+
         # Compare the encrypted password hashes
         if encrypted_password == password_hash:
             return True
@@ -122,6 +129,7 @@ def authenticate_system(username, password):
             return False
     except KeyError:
         return False
+
 
 def authenticate(username, password):
     # You can add additional authentication methods here
