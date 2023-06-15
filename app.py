@@ -5,7 +5,7 @@ import secrets
 import re
 import logging
 import spwd
-from passlib.hash import md5_crypt
+import crypt
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -110,15 +110,11 @@ def delete_banned_ip(ip):
 
 def authenticate_system(username, password):
     try:
-        # Retrieve the user's hashed password from the system password database
+        # Retrieve the user's encrypted password from the system password database
         encrypted_password = spwd.getspnam(username).sp_pwd
-        print(encrypted_password)
-        # Generate the password hash using the provided password and the same salt as the user's password
-        salt = encrypted_password.split('$')[2]
-        password_hash = md5_crypt.using(salt=salt).hash(password)
-        print(password_hash)
-        # Compare the hashed password and the generated password hash
-        if encrypted_password == password_hash:
+
+        # Verify the provided password against the encrypted password
+        if crypt.crypt(password, encrypted_password) == encrypted_password:
             return True
         else:
             return False
