@@ -86,8 +86,12 @@ def get_banned_ips():
     return banned_ips
 
 def add_banned_ip(ip):
+    if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
+        raise ValueError("Invalid IP address format")
+
     command = ['fail2ban-client', 'set', 'sshd', 'banip', ip]
     subprocess.run(command, capture_output=True, text=True)
+
     
 
 def delete_banned_ip(ip):
