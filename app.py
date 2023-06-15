@@ -131,16 +131,16 @@ def authenticate(username, password):
         return False
 
 
-def ssh_login_required(f):
+def system_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'username' not in session or not authenticate_ssh(session['username'], session['password']):
+        if 'username' not in session or not authenticate_system(session['username'], session['password']):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/')
-@ssh_login_required
+@system_login_required
 def index():
     banned_ips = get_banned_ips()
     # Get top countries based on banned IPs
@@ -158,7 +158,7 @@ def index():
 
 
 @app.route('/config', methods=['GET', 'POST'])
-@ssh_login_required
+@system_login_required
 def config():
     if 'username' in session:
         if request.method == 'POST':
@@ -187,7 +187,7 @@ def config():
         return redirect(url_for('login'))
 
 @app.route('/banip', methods=['POST'])
-@ssh_login_required
+@system_login_required
 def ban_ip():
     if 'username' in session:
         ip = request.form.get('ip')
@@ -197,7 +197,7 @@ def ban_ip():
         return redirect(url_for('login'))
 
 @app.route('/unbanip', methods=['POST'])
-@ssh_login_required
+@system_login_required
 def unban_ip():
     if 'username' in session:
         ip = request.form.get('ip')
