@@ -119,12 +119,14 @@ def authenticate_system(username, password):
         if encrypted_password.startswith('$'):
             # Password hash format: $id$salt$encrypted
             salt = encrypted_password.split('$')[2]
+            algorithm = encrypted_password.split('$')[1]
         else:
             # Password hash format: encrypted$salt
             salt = encrypted_password.rsplit('$', 1)[1]
+            algorithm = encrypted_password.split('$')[0]
 
         # Encrypt the provided password using the same algorithm and salt as the user's password
-        password_hash = crypt.crypt(password, f"${encrypted_password[:2]}${salt}")
+        password_hash = crypt.crypt(password, f"${algorithm}${salt}")
         logger.debug(f"Generated Password Hash: {password_hash}")
 
         # Compare the generated password hash with the stored encrypted password
