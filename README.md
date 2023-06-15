@@ -80,6 +80,15 @@ sudo bash install.sh
 
 
 the web ui should now be available at http://localhost:5000/ use your servers login
+
+## Screenshots
+
+
+![image](https://github.com/BeeTwenty/fail2ban-webui/assets/43971937/bd4e6a61-f05b-4706-a622-48f84e47f934)
+
+
+
+
 ## Contributing
 
 Contributions are welcome! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request.
