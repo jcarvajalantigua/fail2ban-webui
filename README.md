@@ -9,7 +9,8 @@ Fail2ban Webui is a web interface for managing Fail2ban on your server. It provi
 - Configure and manage Fail2ban jails
 - Monitor the status of Fail2ban service
 
-## Installation
+## Installation 
+### option 1 (recomended)
 
 1. Clone the repository:
 ```bash
@@ -65,6 +66,17 @@ systemctl daemon-reload
 systemctl start fail2ban-web.service
 systemctl enable fail2ban-web.service
 ```
+### option 2
+1. download install script.
+   ```bash
+   wget https://raw.githubusercontent.com/BeeTwenty/fail2ban-webui/master/install.sh
+  ```
+2. run the installer
+```bash
+sudo bash install.sh
+```
+
+
 the web ui should now be available at http://localhost:5000/ use your servers login
 ## Contributing
 
