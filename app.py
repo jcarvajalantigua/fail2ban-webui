@@ -4,9 +4,8 @@ import geoip2.database
 import secrets
 import re
 import logging
-import crypt
 import spwd
-import hashlib
+import passlib.hash
 from functools import wraps
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_bootstrap import Bootstrap
@@ -116,17 +115,10 @@ def authenticate_system(username, password):
         logger.debug(f"Encrypted Password: {encrypted_password}")
 
         # Extract the salt from the encrypted password
-        if encrypted_password.startswith('$'):
-            # Password hash format: $id$salt$encrypted
-            salt = encrypted_password.split('$')[2]
-            algorithm = encrypted_password.split('$')[1]
-        else:
-            # Password hash format: encrypted$salt
-            salt = encrypted_password.rsplit('$', 1)[1]
-            algorithm = encrypted_password.split('$')[0]
+        salt = encrypted_password.split('$')[2]
 
-        # Encrypt the provided password using the same algorithm and salt as the user's password
-        password_hash = crypt.crypt(password, f"${algorithm}${salt}")
+        # Encrypt the provided password using SHA-512 algorithm and the extracted salt
+        password_hash = passlib.hash.sha512_crypt.using(salt=salt).hash(password)
         logger.debug(f"Generated Password Hash: {password_hash}")
 
         # Compare the generated password hash with the stored encrypted password
