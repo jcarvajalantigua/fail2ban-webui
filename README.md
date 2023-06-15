@@ -73,7 +73,8 @@ systemctl enable fail2ban-web.service
 ```
 
 2. run the installer
-```bash
+
+   ```bash
 sudo bash install.sh
 ```
 
