@@ -45,4 +45,5 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl start fail2ban-web.service
 sudo systemctl enable fail2ban-web.service
+sudo systemctl restart fail2ban-web.service
 sudo systemctl status fail2ban-web.service
