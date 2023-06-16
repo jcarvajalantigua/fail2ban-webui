@@ -130,8 +130,10 @@ def authenticate(username, password):
     # You can add additional authentication methods here
     if authenticate_system(username, password):
         return True
+        print("true")
     else:
         return False
+        print("false")
 
 
 def system_login_required(f):
