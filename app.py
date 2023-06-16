@@ -1,4 +1,3 @@
-import paramiko
 import subprocess
 import geoip2.database
 import secrets
@@ -163,7 +162,7 @@ def index():
 @app.route('/config', methods=['GET', 'POST'])
 @system_login_required
 def config():
-    if 'username' in session:
+    
         if request.method == 'POST':
             # Retrieve form data and update the configuration
             maxretry = request.form.get('maxretry')
@@ -186,9 +185,7 @@ def config():
             config = read_fail2ban_config()
             banned_ips = get_banned_ips()
             return render_template('config.html', config=config, banned_ips=banned_ips) 
-    else:
-        return redirect(url_for('login'))
-
+    
 @app.route('/banip', methods=['POST'])
 @system_login_required
 def ban_ip():
