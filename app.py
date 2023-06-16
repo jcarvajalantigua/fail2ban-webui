@@ -117,6 +117,7 @@ def authenticate_system(username, password):
         # Verify the provided password against the encrypted password
         if crypt.crypt(password, encrypted_password) == encrypted_password:
             return True
+            session 
         else:
             return False
     except KeyError:
@@ -189,22 +190,20 @@ def config():
 @app.route('/banip', methods=['POST'])
 @system_login_required
 def ban_ip():
-    if 'username' in session:
+    
         ip = request.form.get('ip')
         add_banned_ip(ip)
         return redirect(url_for('config'))
-    else:
-        return redirect(url_for('login'))
+    
 
 @app.route('/unbanip', methods=['POST'])
 @system_login_required
 def unban_ip():
-    if 'username' in session:
+    
         ip = request.form.get('ip')
         delete_banned_ip(ip)
         return redirect(url_for('config'))
-    else:
-        return redirect(url_for('login'))
+   
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
