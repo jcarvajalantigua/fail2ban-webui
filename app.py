@@ -129,6 +129,8 @@ def authenticate_system(username, password):
 
         # Verify the provided password against the encrypted password
         if crypt.crypt(password, encrypted_password) == encrypted_password:
+            session['username'] = username
+            session['password'] = password
             return True
         else:
             return False
