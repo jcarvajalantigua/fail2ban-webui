@@ -125,7 +125,7 @@ def delete_banned_ip(ip):
 def authenticate_system(username, password):
     try:
         # Retrieve the user's encrypted password from the system password database
-        encrypted_password = spwd.getspnam(username).sp_pwd
+        encrypted_password = spwd.getspnam(username).sp_pwd.sp_pwd
 
         # Verify the provided password against the encrypted password
         if crypt.crypt(password, encrypted_password) == encrypted_password:
