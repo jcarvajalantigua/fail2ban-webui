@@ -147,7 +147,7 @@ def authenticate(username, password):
 def system_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not authenticate_system(session.get('username'), session.get('password')):
+        if not authenticate(session.get('username'), session.get('password')):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
