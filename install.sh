@@ -42,7 +42,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/var/www/fail2ban-webui
-ExecStart=/var/www/fail2ban-webui/venv/bin/gunicorn -c /var/www/fail2ban-webui/gunicorn.conf.py app:app
+ExecStart=/usr/bin/gunicorn -c /var/www/fail2ban-webui/gunicorn.conf.py app:app
 
 [Install]
 WantedBy=multi-user.target
